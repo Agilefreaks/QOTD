@@ -5,6 +5,7 @@ static TextLayer *quote_layer;
 static TextLayer *author_layer;
 static GBitmap *quote_bitmap;
 static BitmapLayer *image_layer;
+static GFont author_font;
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(quote_layer, "Select");
@@ -19,9 +20,6 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void click_config_provider(void *context) {
-  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
 }
 
 static void add_bitmap_layer(Layer *window_layer){
@@ -32,21 +30,27 @@ static void add_bitmap_layer(Layer *window_layer){
   layer_add_child(window_layer, quote_layer);
 }
 
-static void add_text_layer_for_window(TextLayer *text_layer, char *text, GRect rect, GTextAlignment alignment) {
-  Layer *window_layer = window_get_root_layer(window);
+static void prepare_text_layer(TextLayer *text_layer, char *text, GRect rect, GTextAlignment alignment) {
 
-  text_layer = text_layer_create(rect);
-  text_layer_set_text(text_layer, text);
-  text_layer_set_text_alignment(text_layer, alignment);
-  layer_add_child(window_layer, text_layer_get_layer(text_layer));
 }
 
 static void add_quote_layer(Layer *window_layer){
-  add_text_layer_for_window(quote_layer,"Listening is a magnetic and strange thing, a creative force. The friends who listen to us are the ones we move toward. When we are listened to, it creates us, makes us unfold and expand.",GRect(0, 50, 144, 88) ,GTextAlignmentCenter);
+  quote_layer = text_layer_create(GRect(0, 41, 144, 88));
+  text_layer_set_text(quote_layer, "Listening is a magnetic and strange thing, a creative force. The friends who listen to us are the ones we move toward. When we are listened to, it creates us, makes us unfold and expand.");
+  text_layer_set_text_alignment(quote_layer, GTextAlignmentCenter);
+
+  layer_add_child(window_layer, text_layer_get_layer(quote_layer));
 }
 
 static void add_author_layer(Layer *window_layer){
-  add_text_layer_for_window(author_layer, "--Karl A. Menniger", GRect(0, 140, 144, 90), GTextAlignmentCenter);
+  author_layer = text_layer_create(GRect(0, 130, 144, 30));
+  text_layer_set_text(author_layer, "Karl A. Menniger");
+  text_layer_set_text_alignment(author_layer, GTextAlignmentCenter);
+
+  author_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_AUTHOR_25));
+  text_layer_set_font(author_layer, author_font);
+
+  layer_add_child(window_layer, text_layer_get_layer(author_layer));
 }
 
 static void window_load(Window *window) {
@@ -55,6 +59,8 @@ static void window_load(Window *window) {
   add_quote_layer(window_layer);
   add_author_layer(window_layer);
 }
+
+
 
 static void window_unload(Window *window) {
   text_layer_destroy(quote_layer);

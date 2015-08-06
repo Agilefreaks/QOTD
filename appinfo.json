@@ -18,6 +18,12 @@
         "file": "images/quote.png",
         "name": "QUOTE",
         "type": "png"
+      },
+      {
+        "type": "font",
+        "name": "FONT_AUTHOR_25",
+        "file": "fonts/cheddar_jack.ttf",
+        "compatibility":"2.7"
       }
     ]
   }
