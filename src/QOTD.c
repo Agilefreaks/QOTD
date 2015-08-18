@@ -1,18 +1,12 @@
 #include <pebble.h>
 #define KEY_CONTENT 0
 #define KEY_TITLE 1
-// enum {
-//     KEY_CONTENT 0,
-//     KEY_TITLE 1
-// };
 
 static Window *window;
 
 static ScrollLayer *scroll_layer;
 static TextLayer *content_layer;
 static TextLayer *title_layer;
-static GBitmap *quote_bitmap;
-static BitmapLayer *image_layer;
 static GFont title_font;
 // Store incoming information
 static char content_buffer[1024];
@@ -48,7 +42,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
 
  snprintf(codesmell_layer_buffer, sizeof(codesmell_layer_buffer), "%s, %s", content_buffer, title_buffer);
+ text_layer_set_size(content_layer, GSize(144, 2000));
  text_layer_set_text(content_layer, codesmell_layer_buffer);
+ GSize max_size = text_layer_get_content_size(content_layer);
+ text_layer_set_size(content_layer, max_size);
+ scroll_layer_set_content_size(scroll_layer, GSize(144, max_size.h + 4));
 }
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
@@ -65,14 +63,6 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 static void click_config_provider(void *context) {
 }
 
-static void add_bitmap_layer(ScrollLayer *scroll_layer){
-  quote_bitmap = gbitmap_create_with_resource(RESOURCE_ID_QUOTE);
-  image_layer = bitmap_layer_create(GRect(0, 0, 144, 40));
-  bitmap_layer_set_bitmap(image_layer,quote_bitmap );
-  Layer *bitmap_layer = bitmap_layer_get_layer(image_layer);
-  scroll_layer_add_child(scroll_layer, quote_layer);
-}
-
 static void prepare_text_layer(TextLayer *text_layer, char *text, GRect rect, GTextAlignment alignment) {
 
 }
@@ -80,7 +70,7 @@ static void prepare_text_layer(TextLayer *text_layer, char *text, GRect rect, GT
 static void add_content(ScrollLayer *scroll_layer){
   GRect max_text_bounds = GRect(0, 41, 144, 2000);
   content_layer = text_layer_create(max_text_bounds);
-  text_layer_set_text(content_layer, codesmell_layer_buffer);
+  text_layer_set_text(content_layer, "Loading today's codesmell");
   text_layer_set_text_alignment(content_layer, GTextAlignmentCenter);
 
   GSize max_size = text_layer_get_content_size(content_layer);
@@ -110,7 +100,6 @@ static void window_load(Window *window) {
   scroll_layer = scroll_layer_create(bounds);
   scroll_layer_set_click_config_onto_window(scroll_layer, window);
 
-  add_bitmap_layer(scroll_layer);
   add_content(scroll_layer);
   //add_title_layer(window_layer);
 
