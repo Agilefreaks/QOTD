@@ -68,7 +68,7 @@ static void prepare_text_layer(TextLayer *text_layer, char *text, GRect rect, GT
 }
 
 static void add_content(ScrollLayer *scroll_layer){
-  GRect max_text_bounds = GRect(0, 41, 144, 2000);
+  GRect max_text_bounds = GRect(0, 0, 144, 2000);
   content_layer = text_layer_create(max_text_bounds);
   text_layer_set_text(content_layer, "Loading today's codesmell");
   text_layer_set_text_alignment(content_layer, GTextAlignmentCenter);
