@@ -8,6 +8,7 @@ static GBitmap *quote_bitmap;
 static BitmapLayer *image_layer;
 static GFont author_font;
 ////////////////////////////////
+
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
 
 }
