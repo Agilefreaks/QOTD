@@ -1,3 +1,11 @@
+var xhrRequest = function (url, type, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    callback(this.responseText);
+  };
+  xhr.open(type, url);
+  xhr.send();
+};
 
 Pebble.addEventListener('ready',
   function(e) {
@@ -25,17 +33,18 @@ function codesmellReceived(responseText) {
   var content= json.content;
   var title= json.title;
   var dictionary = {
-    'Content': content,
-    'Title': title
+    "0": content,
+    "1": title
   };
-  Pebble.sendAppMessage(dictionary,
-    function(e) {
-      console.log('Content sent to Pebble successfully!');
-    },
-    function(e) {
-      console.log('Error sending quote to Pebble!');
-    }
-  );
+  // Send to Pebble
+Pebble.sendAppMessage(dictionary,
+  function(e) {
+    // console.log('Code Smell sent to Pebble successfully!');
+  },
+  function(e) {
+    // console.log('Error sending code smell to Pebble!');
+  }
+);
 }
 
 
